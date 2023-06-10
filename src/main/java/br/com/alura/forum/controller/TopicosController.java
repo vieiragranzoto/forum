@@ -28,8 +28,10 @@ import br.com.alura.forum.controller.form.AtualizacaoTopicoForm;
 import br.com.alura.forum.controller.form.TopicoForm;
 import br.com.alura.forum.model.Curso;
 import br.com.alura.forum.model.Topico;
+import br.com.alura.forum.model.User;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
+import br.com.alura.forum.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -42,6 +44,9 @@ public class TopicosController {
 
     @Autowired
     private CursoRepository cursoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
     @Cacheable(value = "listaDeTopicos")
@@ -61,7 +66,8 @@ public class TopicosController {
     public ResponseEntity<TopicoDto> cadastrar(@Valid @RequestBody TopicoForm form,
             UriComponentsBuilder uriComponentsBuilder) {
         Curso curso = cursoRepository.findByNome(form.getNomeCurso());
-        Topico topico = form.converter(curso);
+        Optional<User> usuario = userRepository.findById(form.getNomeUsuario());
+        Topico topico = form.converter(curso, usuario.get());
         topicoRepository.save(topico);
         URI uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(uri).body(new TopicoDto(topico));

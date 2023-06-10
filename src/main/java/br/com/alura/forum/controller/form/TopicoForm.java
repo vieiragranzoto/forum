@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import br.com.alura.forum.model.Curso;
 import br.com.alura.forum.model.Topico;
+import br.com.alura.forum.model.User;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,6 +16,8 @@ public class TopicoForm {
     private String mensagem;
     @NotNull @NotEmpty 
     private String nomeCurso;
+    @NotNull @NotEmpty 
+    private String nomeUsuario;
 
     public String getTitulo() {
         return titulo;
@@ -34,11 +37,18 @@ public class TopicoForm {
     public void setNomeCurso(String nomeCurso) {
         this.nomeCurso = nomeCurso;
     }
-    public Topico converter(Curso curso) {
+    public String getNomeUsuario() {
+        return nomeUsuario;
+    }
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
+    }
+    public Topico converter(Curso curso, User usuario) {
         Topico topico= new Topico();
         topico.setTitulo(titulo);
         topico.setMensagem(mensagem);
         topico.setCurso(curso);
+        topico.setAutor(usuario);
         return topico;
     }
 }
