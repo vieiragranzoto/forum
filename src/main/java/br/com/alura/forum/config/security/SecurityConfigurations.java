@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,6 +25,7 @@ import br.com.alura.forum.repository.UserRepository;
 
 @EnableWebSecurity
 @Configuration
+@Profile("prod")
 public class SecurityConfigurations {
 
 	@Autowired
@@ -41,9 +43,11 @@ public class SecurityConfigurations {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers(HttpMethod.POST,"/auth").permitAll()
-				.requestMatchers(HttpMethod.GET,"/actuator/**").permitAll()
 				.requestMatchers(HttpMethod.GET,"/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+				.requestMatchers(HttpMethod.GET,"/actuator/**").hasAuthority("ADM")
+				.requestMatchers(HttpMethod.POST,"/auth").permitAll()
+				.requestMatchers(HttpMethod.GET,"/topicos", "/topicos/*").permitAll()
+				.requestMatchers(HttpMethod.DELETE,"/topicos/*").hasAuthority("ADM")
                 .anyRequest()
                 .authenticated())
                 .csrf(csrf -> csrf.disable())
