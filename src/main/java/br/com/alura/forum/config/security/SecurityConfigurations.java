@@ -25,7 +25,7 @@ import br.com.alura.forum.repository.UserRepository;
 
 @EnableWebSecurity
 @Configuration
-@Profile("prod")
+@Profile(value = {"prod", "test"})
 public class SecurityConfigurations {
 
 	@Autowired
