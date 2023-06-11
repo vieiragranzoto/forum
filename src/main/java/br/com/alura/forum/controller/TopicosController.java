@@ -32,6 +32,8 @@ import br.com.alura.forum.model.User;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import br.com.alura.forum.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -49,6 +51,7 @@ public class TopicosController {
     private UserRepository userRepository;
 
     @GetMapping
+    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     @Cacheable(value = "listaDeTopicos")
     public Page<TopicoDto> listar(@RequestParam(required = false) String nomeCurso,@PageableDefault(sort = "titulo", direction = Direction.ASC, page = 0, size = 10) Pageable pageable){
 
@@ -62,6 +65,7 @@ public class TopicosController {
 
     @PostMapping
     @Transactional
+    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoDto> cadastrar(@Valid @RequestBody TopicoForm form,
             UriComponentsBuilder uriComponentsBuilder) {
@@ -74,6 +78,7 @@ public class TopicosController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id) {
         Optional<Topico> topico = topicoRepository.findById(id);
         if (topico.isPresent()) {
@@ -84,6 +89,7 @@ public class TopicosController {
 
     @PutMapping("/{id}")
     @Transactional
+    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizacaoTopicoForm form) {
         Optional<Topico> optional = topicoRepository.findById(id);
@@ -96,6 +102,7 @@ public class TopicosController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "My endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<?> deletar(@PathVariable Long id) {
         Optional<Topico> optional = topicoRepository.findById(id);
